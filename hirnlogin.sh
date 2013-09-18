@@ -4,18 +4,17 @@
 # Modify this:                                                        #
 # Deine Daten eintragen:                                              #
 #######################################################################
-_USER='testus1' # Username (Login-ID) / Benutzer (Login-ID)
-_PASS='mypassword123' # Password / Passwort
+_USER='userna7o' # Username (Login-ID) / Benutzer (Login-ID)
+_PASS='myp4ssw0rd' # Password / Passwort
 
 #######################################################################
 # Don't change anything past this line!                               #
 # Nach dieser Zeile nichts mehr ändern!                               #
 #######################################################################
-_USERAGENT='HIRN Login Script v0.2'
+_USERAGENT='HIRN Login Script v0.5'
 _STARTURL='https://login.rz.ruhr-uni-bochum.de/cgi-bin/start'
 _POSTURL='https://login.rz.ruhr-uni-bochum.de/cgi-bin/laklogin' 
 _CACERT='/etc/ssl/certs/Deutsche_Telekom_Root_CA_2.pem' 
-_POST="loginid=$_USER&password=$_PASS&action=Login"
 _ISINTERNETUP='google.com'
 _CHECKSTRING='des Zugangs Ihre Identifikation und das zugeh&ouml;rige Passwort ein.'
 _SUCCESSSTRING='gelungen'
@@ -35,6 +34,10 @@ if [ $_EXIT -ne 0 ]; then
   echo "Cannot reach HIRN-Port."
   exit 2
 fi
+
+# Get the IP address and complete the POST data
+_IPADDR=`curl -s -1 -4 -A "$_USERAGENT" --cacert "$_CACERT" "$_STARTURL" | grep ipaddr| cut -d '"' -f 8`
+_POST="code=1&loginid=$_USER&password=$_PASS&ipaddr=$_IPADDR&action=Login"
 
 # Do the Login
 curl -s -1 -4 -A "$_USERAGENT" -d "$_POST" -e "$_STARTURL" --cacert "$_CACERT" "$_POSTURL" | grep -q "$_SUCCESSSTRING"
