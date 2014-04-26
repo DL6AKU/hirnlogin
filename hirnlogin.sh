@@ -1,6 +1,8 @@
 #!/bin/sh
 # Copyright (c) 2014, Michael Düll <michael.duell@rub.de>
 # All rights reserved.
+#
+# Modifications: (c) 2014, Jan Holthuis <jan.holthuis@rub.de>
 # 
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -28,17 +30,18 @@
 # Modify this:                                                        #
 # Deine Daten eintragen:                                              #
 #######################################################################
-_USER='userna7o' # Username (Login-ID) / Benutzer (Login-ID)
-_PASS='myp4ssw0rd' # Password / Passwort
+_USER='' # Username (Login-ID) / Benutzer (Login-ID)
+_PASS='' # Password / Passwort
 
 #######################################################################
 # Don't change anything past this line!                               #
 # Nach dieser Zeile nichts mehr ändern!                               #
 #######################################################################
-_USERAGENT='HIRN Login Script v0.5'
+_USERAGENT='HIRN Login Script v0.6'
 _STARTURL='https://login.rz.ruhr-uni-bochum.de/cgi-bin/start'
-_POSTURL='https://login.rz.ruhr-uni-bochum.de/cgi-bin/laklogin' 
-_CACERT='/etc/ssl/certs/Deutsche_Telekom_Root_CA_2.pem' 
+_POSTURL='https://login.rz.ruhr-uni-bochum.de/cgi-bin/laklogin'
+_CACERT='/etc/ssl/certs/Deutsche_Telekom_Root_CA_2.pem'
+_CACERTURL='https://www.pki.dfn.de/fileadmin/PKI/zertifikate/deutsche-telekom-root-ca-2.pem'
 _ISINTERNETUP='google.com'
 _CHECKSTRING='des Zugangs Ihre Identifikation und das zugeh&ouml;rige Passwort ein.'
 _SUCCESSSTRING='gelungen'
@@ -51,12 +54,38 @@ if [ $_EXIT -eq 0 ]; then
     exit 0
 fi
 
+# Check if CA certificate is in place
+if ! [ -e $_CACERT ] ; then
+   echo "CA certificate not found. The certificate is available at:"
+   echo "$_CACERTURL"
+   echo "If you already downloaded the certificate, please make sure that you put it in the right location ($_CACERT)."
+   exit 4
+fi
+
+# Check if CA certificate is readable
+if ! [ -r $_CACERT ] ; then
+   echo "CA certificate file $_CACERT is not readable by current user $USER."
+   exit 5
+fi
+
+# Check if curl is installed and in $PATH
+if ! curl_installed=$(type -p "curl") || [ -z "$curl_installed" ]; then
+  echo "Cannot find \"curl\" executable. Are you sure it's installed?"
+  exit 6
+fi
+
 # Check if we're really at a HIRN Port.
 curl -s -1 -4 -A "$_USERAGENT" --cacert "$_CACERT" "$_STARTURL" 2>/dev/null | grep -q "$_CHECKSTRING"
 _EXIT=$?
 if [ $_EXIT -ne 0 ]; then
   echo "Cannot reach HIRN-Port."
   exit 2
+fi
+
+# Check if user entered login credentials (i.e. check if $_USER and $_PAth are zero-length strings)
+if [ -z $_USER ] || [ -z $_PASS ]; then
+    echo "Login credentials not set. Please edit this file and fill in values for \$_USER and \$_PASS."
+    exit 3
 fi
 
 # Get the IP address and complete the POST data
@@ -67,7 +96,7 @@ _POST="code=1&loginid=$_USER&password=$_PASS&ipaddr=$_IPADDR&action=Login"
 curl -s -1 -4 -A "$_USERAGENT" -d "$_POST" -e "$_STARTURL" --cacert "$_CACERT" "$_POSTURL" | grep -q "$_SUCCESSSTRING"
 _EXIT=$?
 if [ $_EXIT -ne 0 ]; then
-  echo "Login failed!"
+  echo "Login failed! Please check if login credentials are correct."
   exit 1
 fi
 
