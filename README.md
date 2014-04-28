@@ -25,7 +25,7 @@ mv deutsche-telekom-root-ca-2.pem /etc/ssl/certs/Deutsche_Telekom_Root_CA_2.pem
 Simply download the script or clone the git repository:
 
 ```bash
-git clone https://github.com/Holzhaus/hirnlogin.git
+git clone https://github.com/akurei/hirnlogin.git
 ```
 
 You can then open the file ```hirnlogin.sh``` with your favourite text editor (e.g. ```nano```):
