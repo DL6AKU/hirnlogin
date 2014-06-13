@@ -8,7 +8,11 @@ How to Install
 
 The script needs ```curl``` to be installed.
 
-You also need to download the CA certificate (*Deutsche Telekom Root CA 2*) in PEM format. You can download the certificate (here)[https://www.pki.dfn.de/root/globalroot/]
+You also need to download the CA certificate (*Deutsche Telekom Root CA 2*).
+
+#### Download CA certificate manually
+
+You can download the certificate in PEM format (here)[https://www.pki.dfn.de/root/globalroot/]
 
 After download, you may want to check if the SHA-256 on the website matches your downloaded file:
 ```bash
@@ -19,6 +23,21 @@ You need to move the PEM file to ```/etc/ssl/certs/Deutsche_Telekom_Root_CA_2.pe
 ```bash
 mv deutsche-telekom-root-ca-2.pem /etc/ssl/certs/Deutsche_Telekom_Root_CA_2.pem
 ```
+
+#### Use CA certificate from distribution package
+
+Most distribution provide a `ca-certificates` package, which can be installed through the distributions package manager and will most likely contain the needed certificate.
+
+Just install the package, e.g. in OpenWRT you type:
+```bash
+opkg update && opkg install ca-certificates
+```
+
+Please note that you might need to change the `$_CACERT`-variable in `hirnlogin.sh` to match the certificate's path. In OpenWRT for example, the certificate is in the right directory, but in CRT format. Thus, you need to change the `$_CACERT`-variable:
+```bash
+sed  -i -r "s/(\/etc\/ssl\/certs\/[a-zA-Z0-9_-]+)\.pem/\1\.crt/g" /path/to/hirnlogin.sh
+```
+
 
 ### Installation and Configuration
 
