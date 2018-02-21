@@ -8,20 +8,20 @@ How to Install
 
 The script needs ```curl``` to be installed.
 
-You also need to download the CA certificate (*Deutsche Telekom Root CA 2*).
+You also need to download the CA certificate (*T-TeleSec_GlobalRoot_Class_2.pem*).
 
 #### Download CA certificate manually
 
-You can download the certificate in PEM format (here)[https://www.pki.dfn.de/root/globalroot/]
+You can download the certificate in PEM format (here)[https://www.pki.dfn.de/wurzelzertifikate/globalroot2/]
 
 After download, you may want to check if the SHA-256 on the website matches your downloaded file:
 ```bash
-sha256sum deutsche-telekom-root-ca-2.pem
+sha256sum T-TeleSec_GlobalRoot_Class_2.pem
 ```
 
-You need to move the PEM file to ```/etc/ssl/certs/Deutsche_Telekom_Root_CA_2.pem```:
+You need to move the PEM file to ```/etc/ssl/certs/T-TeleSec_GlobalRoot_Class_2.pem```:
 ```bash
-mv deutsche-telekom-root-ca-2.pem /etc/ssl/certs/Deutsche_Telekom_Root_CA_2.pem
+mv T-TeleSec_GlobalRoot_Class_2.pem /etc/ssl/certs/T-TeleSec_GlobalRoot_Class_2.pem
 ```
 
 #### Use CA certificate from distribution package
@@ -44,7 +44,7 @@ sed  -i -r "s/(\/etc\/ssl\/certs\/[a-zA-Z0-9_-]+)\.pem/\1\.crt/g" /path/to/hirnl
 Simply download the script or clone the git repository:
 
 ```bash
-git clone https://github.com/akurei/hirnlogin.git
+git clone https://github.com/DL6AKU/hirnlogin.git
 ```
 
 You can then open the file ```hirnlogin.sh``` with your favourite text editor (e.g. ```nano```):
