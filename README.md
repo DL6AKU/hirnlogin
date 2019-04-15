@@ -111,7 +111,7 @@ and enter this:
 
 ```cron
 #MIN HOUR DOM MON DOW CMD
-*/5  *    *   *   *   /path/to/hirnlogin.sh >/dev/null
+*/5  *    *   *   *   /path/to/hirnlogin.sh login >/dev/null
 ```
 
 *(The snippet above will tell the ```cron``` daemon to automatically execute this script every five minutes.)*
